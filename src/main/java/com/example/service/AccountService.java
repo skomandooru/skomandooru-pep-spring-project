@@ -13,8 +13,7 @@ import java.util.Optional;
 @Service
 public class AccountService {
     public AccountRepository accountRepo;
-    private String username;
-
+    
     @Autowired
     public AccountService (AccountRepository accountRepo) {
         this.accountRepo = accountRepo;
@@ -40,6 +39,10 @@ public class AccountService {
         return false; // User not found
     }
 
+    public void addAccount(Account account) {
+        accountRepo.save(account);
+    }
+
     private boolean validatePassword(String password, String storedPassword) {
         return false;
     }
@@ -56,7 +59,7 @@ public class AccountService {
 
         // You should implement password hashing here before storing it in the database.
         // For example, you can use Spring Security's BCryptPasswordEncoder.
-        // String passwordHash = encodePassword(password);
+        // String password = encodePassword(password);
 
         // Create a new user entity and save it to the database
         setUsername(username);
@@ -72,10 +75,13 @@ public class AccountService {
     }
 
     private void setUsername(String username) {
-        this.username = username;
     }
 
     public Map<String, Object> login(String string, String string2) {
+        return null;
+    }
+
+    public static Object status(int i) {
         return null;
     }
 }

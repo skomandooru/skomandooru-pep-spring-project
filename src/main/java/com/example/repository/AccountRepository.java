@@ -6,10 +6,7 @@ import com.example.entity.Account;
 
 public interface AccountRepository {
 
-    static Account save(Account account) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
-    }
+    Account save(Account account);
 
     static Optional<Account> findByUsername(String username) {
         // TODO Auto-generated method stub

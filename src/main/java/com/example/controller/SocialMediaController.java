@@ -32,11 +32,24 @@ public class SocialMediaController {
     @Autowired
     private AccountService accountService;
 
+    /**
+     * @param account
+     * @return
+     */
     @Autowired
     //private MessageService messageService;
 
     @PostMapping("/register")
-    public AccountService registerUser(@RequestBody Account newAccount) {
+    public AccountService registerUser(@RequestBody Account account) {
+        if(account.getUsername().contains(account.getUsername())) {
+            return ((Object) AccountService.status(409)).body(accountService.addAccount(account)); 
+        }
+        else if (account.getUsername().isBlank() || (account.getPassword().length() <= 4)) {
+            return AccountService.status(400). body(accountService.addAccount(account));
+        }
+        else {
+            return  AccountService.status(200).body(accountService.addAccount(account));
+        }
         return accountService;
     }
 
