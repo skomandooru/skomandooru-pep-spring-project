@@ -1,5 +1,7 @@
 package com.example.entity;
 
+import java.util.Map;
+
 import javax.persistence.*;
 
 /**
@@ -74,10 +76,10 @@ public class Message {
     }
     /**
      * Properly named getters and setters are necessary for Jackson ObjectMapper to work. You may use them as well.
-     * @param message_id
+     * @param newMessageText
      */
-    public void setMessage_id(Integer message_id) {
-        this.message_id = message_id;
+    public void setMessage_id(String newMessageText) {
+        this.message_text = newMessageText;
     }
     /**
      * Properly named getters and setters are necessary for Jackson ObjectMapper to work. You may use them as well.
@@ -171,6 +173,12 @@ public class Message {
                 ", message_text='" + message_text + '\'' +
                 ", time_posted_epoch=" + time_posted_epoch +
                 '}';
+    }
+    public Map<String, Object> getMessageText() {
+        return null;
+    }
+    public Object getPostedBy() {
+        return null;
     }
 
 

@@ -6,7 +6,9 @@ import com.example.entity.Message;
 import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
 import com.example.service.AccountService;
-import com.example.service.MessageService;
+
+import MessageService;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
