@@ -1,51 +1,81 @@
 package com.example.service;
 
+import org.apache.tomcat.jni.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.entity.Account;
 import com.example.repository.AccountRepository;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class AccountService {
+    public AccountRepository accountRepo;
+    private String username;
 
     @Autowired
-    private AccountRepository accountRepository;
-
-    public Map<String, Object> registerAccount(Account newAccount) {
-        Map<String, Object> response = new HashMap<>();
-        if (newAccount.getUsername().isEmpty() || newAccount.getPassword().length() < 4) {
-            response.put("status", 400);
-            return response;
-        }
-
-        Optional<Account> existingAccount = accountRepository.findByUsername(newAccount.getUsername());
-        if (existingAccount.isPresent()) {
-            response.put("status", 409);
-            return response;
-        }
-
-        Account createdAccount = accountRepository.save(newAccount);
-        response.put("status", 200);
-        response.put("account", createdAccount);
-        return response;
+    public AccountService (AccountRepository accountRepo) {
+        this.accountRepo = accountRepo;
     }
 
-    public Map<String, Object> login(String username, String password) {
-        Map<String, Object> response = new HashMap<>();
-        Optional<Account> account = accountRepository.findByUsernameAndPassword(username, password);
-        if (account.isPresent()) {
-            response.put("status", 200);
-            response.put("account", account.get());
-        } else {
-            response.put("status", 401);
-        }
-        return response;
+    public boolean doesUsernameExist(String username) {
+        Optional<Account> existingUser = AccountRepository.findByUsername(username);
+        return existingUser.isPresent();
     }
 
-    // Add other account-related methods here
+    public boolean isUsernameAndPasswordValid(String username, String password) {
+        Optional<Account> existingUser = AccountRepository.findByUsername(username);
+
+        if (existingUser.isPresent()) {
+            // You should implement password validation logic here, e.g., hashing and comparing.
+            String storedPassword = existingUser.get().getPassword();
+            // Implement password hashing and validation logic, don't compare plaintext passwords.
+            // For security reasons, consider using a library like Spring Security for authentication.
+            boolean isValidPassword = validatePassword(password, storedPassword);
+            return isValidPassword;
+        }
+
+        return false; // User not found
+    }
+
+    private boolean validatePassword(String password, String storedPassword) {
+        return false;
+    }
+
+    /**
+     * @param username
+     * @param password
+     */
+    public AccountService(String username, String password) {
+        // Check if the username already exists
+        if (doesUsernameExist(username)) {
+            return; // Username already exists
+        }
+
+        // You should implement password hashing here before storing it in the database.
+        // For example, you can use Spring Security's BCryptPasswordEncoder.
+        // String passwordHash = encodePassword(password);
+
+        // Create a new user entity and save it to the database
+        setUsername(username);
+
+        // Set the password hash here
+        AccountService.setPassword(password);
+        //AccountRepository.save(newUser);
+
+        return; // Account created successfully
+    }
+
+    private static void setPassword(String password) {
+    }
+
+    private void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Map<String, Object> login(String string, String string2) {
+        return null;
+    }
 }

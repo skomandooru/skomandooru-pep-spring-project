@@ -33,11 +33,11 @@ public class SocialMediaController {
     private AccountService accountService;
 
     @Autowired
-    private MessageService messageService;
+    //private MessageService messageService;
 
     @PostMapping("/register")
-    public Map<String, Object> registerUser(@RequestBody Account newAccount) {
-        return accountService.registerAccount(newAccount);
+    public AccountService registerUser(@RequestBody Account newAccount) {
+        return accountService;
     }
 
     @PostMapping("/login")

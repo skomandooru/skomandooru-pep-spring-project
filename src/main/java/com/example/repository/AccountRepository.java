@@ -6,9 +6,15 @@ import com.example.entity.Account;
 
 public interface AccountRepository {
 
-    Account save(Account account);
+    static Account save(Account account) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    }
 
-    Optional<Account> findByUsername(String username);
+    static Optional<Account> findByUsername(String username) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findByUsername'");
+    }
 
     Optional<Account> findByUsernameAndPassword(String username, String password);
 
