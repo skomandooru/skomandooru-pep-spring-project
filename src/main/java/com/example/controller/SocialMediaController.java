@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Controller
-@RequestMapping("/api")
+@RestController
+//@RequestMapping("/api")
 public class SocialMediaController {
 
-    private final AtomicLong accountIdCounter = new AtomicLong(1);
-    private final AtomicLong messageIdCounter = new AtomicLong(1);
-    private final List<Account> accounts = new ArrayList<>();
-    private final List<Message> messages = new ArrayList<>();
+    //private final AtomicLong accountIdCounter = new AtomicLong(1);
+    //private final AtomicLong messageIdCounter = new AtomicLong(1);
+    //private final List<Account> accounts = new ArrayList<>();
+    //private final List<Message> messages = new ArrayList<>();
 
     @Autowired
     private AccountService accountService;
@@ -33,21 +33,22 @@ public class SocialMediaController {
     // Endpoint 1: User Registration
     @PostMapping("/register")
     @ResponseBody
-    public ResponseEntity<Account> registerUser(@RequestBody Account newAccount) {
-        try {
-            Account createdAccount = accountService.registerAccount(newAccount);
-            return ResponseEntity.ok(createdAccount);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
-        }
-    }
+    public ResponseEntity<Account> registerAccount(@RequestBody Account newAccount) {
+       
+       if(accountService.checkUsernameAvailability(newAccount.getUsername() && accountService.loginAccount(newAccount.getUsername()), newAccount.getPassword())) {
+            accountService.addAccount(newAccount);
+            return new ResponseEntity<Account>(accountService.loginAccount(newAccount), HttpStatus.OK);
+       }
+       else if(!accountService.checkUsernameAvailability(newAccount.getUsername())) {
+        return new ResponseEntity<Account>(HttpStatus.CONFLICT);
+       }       
+       return new ResponseEntity<Account>(HttpStatus.BAD_REQUEST);
+    }   
 
     // Endpoint 2: User Login
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<Account> loginUser(@RequestBody Map<String, String> loginRequest) {
+    public ResponseEntity<Account> login(@RequestBody Map<String, String> loginRequest) {
         try {
             Account account = accountService.login(loginRequest.get("username"), loginRequest.get("password"));
             return ResponseEntity.ok(account);

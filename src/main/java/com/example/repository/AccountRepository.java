@@ -1,20 +1,19 @@
 package com.example.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.example.entity.Account;
 
-import java.util.Optional;
 
-public interface AccountRepository extends JpaRepository<Account, Long>{
-    static Optional<Account> findByUsername(String username) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByUsername'");
-    }
-    Account findByUsernameAndPassword(String username, String password);
-	/**
-	 * @return
-	 */
-	static Optional<Account> FindById(final Object postedBy) {
-		return null;
-	}
+public interface AccountRepository extends JpaRepository<Account, Integer>{
+ 
+	@Query("FROM Account WHERE username = :username")
+	Account findByUsername(@Param("username") String username);
+
+	@Query("FROM Account WHERE account_id = :account_id")
+	Account findByAccount(@Param("account_id") int account_id);
+
+	@Query("FROM Account WHERE username = :username AND password = :password")
+	Account findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 }  

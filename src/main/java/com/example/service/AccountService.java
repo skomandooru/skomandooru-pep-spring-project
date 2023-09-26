@@ -6,37 +6,61 @@ import org.springframework.stereotype.Service;
 import com.example.entity.Account;
 import com.example.repository.AccountRepository;
 
-import java.util.Optional;
-
 import javax.naming.AuthenticationException;
 
 @Service
 public class AccountService {
+    final private AccountRepository accountRepo;
 
     @Autowired
-    private AccountRepository accountRepository;
+    public AccountService(AccountRepository accountRepo) {
+        this.accountRepo = accountRepo;
+    }
+
+    
 
     public Account registerAccount(Account newAccount) throws Exception {
-        if (newAccount.getUsername().isEmpty() || newAccount.getPassword().length() < 4) {
+        if (newAccount.getUsername().isEmpty() || newAccount.getPassword().length() >= 4) {
             throw new IllegalArgumentException("Invalid account information");
         }
 
-        Optional<Account> existingAccount = AccountRepository.findByUsername(newAccount.getUsername());
+        Account existingAccount = accountRepo.findByUsername(newAccount.getUsername());
         if (existingAccount.isPresent()) {
             throw new Exception("Username already exists");
         }
 
-        return accountRepository.save(newAccount);
+        return accountRepo.save(newAccount);
     }
 
     public Account login(String username, String password) throws AuthenticationException {
-        Account account = accountRepository.findByUsernameAndPassword(username, password);
+        Account account = accountRepo.findByUsernameAndPassword(username, password);
         if (account.isPresent()) {
             return account.get();
         } else {
             throw new AuthenticationException("Invalid credentials");
         }
     }
+
+    public void addAccount(Account newAccount) {
+    }
+
+    public Account loginAccount(Account newAccount) {
+        return null;
+    }
     
     // Add other account-related methods here
+    public boolean checkUsernameAvailability(String username) {
+        Account a = accountRepo.findByUsername(username);
+        if (a == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean validAccount(String username, String password) {
+        if (username != "" && password.length() >= 4) {
+            return true;
+        }
+        return false;
+    }
 }
