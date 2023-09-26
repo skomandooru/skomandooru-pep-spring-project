@@ -1,19 +1,21 @@
 package com.example.repository;
 
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.entity.Account;
 
-public interface AccountRepository {
+import java.util.Optional;
 
-    Account save(Account account);
-
+public interface AccountRepository extends JpaRepository<Account, Long>{
     static Optional<Account> findByUsername(String username) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findByUsername'");
     }
-
-    Optional<Account> findByUsernameAndPassword(String username, String password);
-
-    Optional<Account> findById(Object postedBy);
-}
+    Account findByUsernameAndPassword(String username, String password);
+	/**
+	 * @return
+	 */
+	static Optional<Account> findById(final Object postedBy) {
+		return null;
+	}
+}  

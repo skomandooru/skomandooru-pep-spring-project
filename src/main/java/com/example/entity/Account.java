@@ -139,4 +139,10 @@ public class Account {
                 ", password='" + password + '\'' +
                 '}';
     }
+    public boolean isPresent() {
+        return false;
+    }
+    public Account get() {
+        return null;
+    }
 }

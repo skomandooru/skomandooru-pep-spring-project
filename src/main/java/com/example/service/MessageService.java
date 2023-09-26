@@ -1,4 +1,5 @@
 package com.example.service;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,9 +8,7 @@ import com.example.entity.Message;
 import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -18,79 +17,58 @@ public class MessageService {
     @Autowired
     private MessageRepository messageRepository;
 
-    @Autowired
-    private AccountRepository accountRepository;
-
-    public Map<String, Object> createMessage(Message newMessage) {
-        Map<String, Object> response = new HashMap<>();
+    public Message createMessage(Message newMessage) {
         if (newMessage.getMessageText().isEmpty() || ((CharSequence) newMessage.getMessageText()).length() > 255) {
-            response.put("status", 400);
-            return response;
+            throw new IllegalArgumentException("Invalid message text");
         }
 
-        Optional<Account> account = accountRepository.findById(newMessage.getPostedBy());
+        Optional<Account> account = AccountRepository.findById(newMessage.getPostedBy());
         if (!account.isPresent()) {
-            response.put("status", 400);
-            return response;
+            throw new IllegalArgumentException("Invalid user");
         }
 
         newMessage.setTime_posted_epoch(System.currentTimeMillis());
-        Message createdMessage = messageRepository.save(newMessage);
-        response.put("status", 200);
-        response.put("message", createdMessage);
-        return response;
+        return messageRepository.save(newMessage);
     }
 
     public List<Message> getAllMessages() {
         return messageRepository.findAll();
     }
 
-    public Message getMessageById(Long messageId) {
+    public Message getMessageById(Long messageId) throws Exception {
         Optional<Message> message = messageRepository.findById(messageId);
         if (message.isPresent()) {
             return message.get();
         } else {
-            try {
-                throw new Exception("Message not found");
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            throw new Exception("Message not found");
         }
-        return null;
     }
 
-    public Map<String, Object> deleteMessage(Long messageId) {
-        Map<String, Object> response = new HashMap<>();
+    public void deleteMessage(Long messageId) {
         Optional<Message> message = messageRepository.findById(messageId);
         if (message.isPresent()) {
             messageRepository.delete(message.get());
-        }
-        response.put("status", 200);
-        return response;
+        } // No need to throw an exception if the message does not exist
     }
 
-    public Map<String, Object> updateMessageText(Long messageId, String newMessageText) {
-        Map<String, Object> response = new HashMap<>();
+    public int updateMessageText(Long messageId, String newMessageText) throws Exception {
         if (newMessageText.isEmpty() || newMessageText.length() > 255) {
-            response.put("status", 400);
-            return response;
+            throw new IllegalArgumentException("Invalid message text");
         }
 
         Optional<Message> message = messageRepository.findById(messageId);
         if (message.isPresent()) {
-            message.get().setMessage_id(newMessageText);
+            message.get().setMessage_text(newMessageText);
             messageRepository.save(message.get());
-            response.put("status", 200);
+            return 1; // Rows updated
         } else {
-            response.put("status", 400);
+            throw new Exception("Message not found");
         }
-        return response;
     }
 
     public List<Message> getMessagesByUser(Long accountId) {
         return messageRepository.findByPostedBy(accountId);
     }
-
+    
     // Add other message-related methods here
 }

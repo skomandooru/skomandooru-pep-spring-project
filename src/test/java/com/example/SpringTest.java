@@ -1,6 +1,5 @@
 package com.example;
 
-import com.example.controller.SocialMediaController;
 import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.repository.AccountRepository;

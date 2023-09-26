@@ -1,97 +1,118 @@
-package com.example.controller;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.naming.AuthenticationException;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
 
-/**
- * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
- * found in readme.md as well as the test cases. You be required to use the @GET/POST/PUT/DELETE/etc Mapping annotations
- * where applicable as well as the @ResponseBody and @PathVariable annotations. You should
- * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
- */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+
 @Controller
+@RequestMapping("/api")
 public class SocialMediaController {
+
+    private final AtomicLong accountIdCounter = new AtomicLong(1);
+    private final AtomicLong messageIdCounter = new AtomicLong(1);
+    private final List<Account> accounts = new ArrayList<>();
+    private final List<Message> messages = new ArrayList<>();
 
     @Autowired
     private AccountService accountService;
 
-    /**
-     * @param account
-     * @return
-     */
     @Autowired
     private MessageService messageService;
 
+    // Endpoint 1: User Registration
     @PostMapping("/register")
-    public AccountService registerUser(Account account) {
-        if(account.getUsername().contains(account.getUsername())) {
-            return AccountService.status(409).body(accountService.addAccount(account)); 
+    @ResponseBody
+    public ResponseEntity<Account> registerUser(@RequestBody Account newAccount) {
+        try {
+            Account createdAccount = accountService.registerAccount(newAccount);
+            return ResponseEntity.ok(createdAccount);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
         }
-        else if (account.getUsername().isBlank() || (account.getPassword().length() <= 4)) {
-            return AccountService.status(400). body(accountService.addAccount(account));
-        }
-        else {
-            return  AccountService.status(200).body(accountService.addAccount(account));
-        }
-        return accountService;
     }
 
+    // Endpoint 2: User Login
     @PostMapping("/login")
     @ResponseBody
-    public Map<String, Object> loginUser(@RequestBody Map<String, String> loginRequest) {
-        return accountService.login(loginRequest.get("username"), loginRequest.get("password"));
+    public ResponseEntity<Account> loginUser(@RequestBody Map<String, String> loginRequest) {
+        try {
+            Account account = accountService.login(loginRequest.get("username"), loginRequest.get("password"));
+            return ResponseEntity.ok(account);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage(), e);
+        }
     }
 
+    // Endpoint 3: Create a new message
     @PostMapping("/messages")
     @ResponseBody
-    public Map<String, Object> createMessage(@RequestBody Message newMessage) {
-        return Message.createMessage(newMessage);
+    public ResponseEntity<Message> createMessage(@RequestBody Message newMessage) {
+        try {
+            Message createdMessage = messageService.createMessage(newMessage);
+            return ResponseEntity.ok(createdMessage);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
     }
 
+    // Endpoint 4: Retrieve all messages
     @GetMapping("/messages")
     @ResponseBody
     public List<Message> getAllMessages() {
         return messageService.getAllMessages();
     }
 
+    // Endpoint 5: Retrieve a message by its ID
     @GetMapping("/messages/{message_id}")
     @ResponseBody
-    public Message getMessageById(@PathVariable("message_id") Long messageId) {
-        return messageService.getMessageById(messageId);
+    public ResponseEntity<Message> getMessageById(@PathVariable("message_id") Long messageId) {
+        try {
+            Message message = messageService.getMessageById(messageId);
+            return ResponseEntity.ok(message);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
 
+    // Endpoint 6: Delete a message by its ID
     @DeleteMapping("/messages/{message_id}")
-    @ResponseBody
-    public Map<String, Object> deleteMessage(@PathVariable("message_id") Long messageId) {
-        return messageService.deleteMessage(messageId);
+    public ResponseEntity<Void> deleteMessage(@PathVariable("message_id") Long messageId) {
+        try {
+            messageService.deleteMessage(messageId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.OK); // Deleting a non-existent message is considered successful
+        }
     }
 
+    // Endpoint 7: Update a message text by its ID
     @PatchMapping("/messages/{message_id}")
     @ResponseBody
-    public Map<String, Object> updateMessageText(
+    public ResponseEntity<Integer> updateMessageText(
             @PathVariable("message_id") Long messageId,
             @RequestBody Map<String, String> updateRequest) {
-        return messageService.updateMessageText(messageId, updateRequest.get("message_text"));
+        try {
+            int rowsUpdated = messageService.updateMessageText(messageId, updateRequest.get("message_text"));
+            return ResponseEntity.ok(rowsUpdated);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
     }
 
+    // Endpoint 8: Retrieve all messages by a particular user
     @GetMapping("/accounts/{account_id}/messages")
     @ResponseBody
     public List<Message> getMessagesByUser(@PathVariable("account_id") Long accountId) {
