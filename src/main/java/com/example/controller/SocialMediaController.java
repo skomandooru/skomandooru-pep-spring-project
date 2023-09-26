@@ -3,7 +3,6 @@ package com.example.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -12,7 +11,6 @@ import com.example.entity.Message;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +34,7 @@ public class SocialMediaController {
     @ResponseBody
     public ResponseEntity<Account> registerAccount(@RequestBody Account newAccount) {
        
-       if(accountService.checkUsernameAvailability(newAccount.getUsername() && accountService.login(newAccount.getUsername(), null), newAccount.getPassword())) {
+        if(accountService.checkUsernameAvailability(newAccount.getUsername()) && accountService.validAccount(newAccount.getUsername(), newAccount.getPassword())) {
             accountService.addAccount(newAccount);
             return new ResponseEntity<Account>(accountService.loginAccount(newAccount), HttpStatus.OK);
        }
