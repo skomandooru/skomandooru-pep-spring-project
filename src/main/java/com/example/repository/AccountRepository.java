@@ -15,7 +15,7 @@ public interface AccountRepository extends JpaRepository<Account, Long>{
 	/**
 	 * @return
 	 */
-	static Optional<Account> findById(final Object postedBy) {
+	static Optional<Account> FindById(final Object postedBy) {
 		return null;
 	}
 }  

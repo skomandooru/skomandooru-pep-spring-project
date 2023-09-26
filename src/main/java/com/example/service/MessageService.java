@@ -22,7 +22,7 @@ public class MessageService {
             throw new IllegalArgumentException("Invalid message text");
         }
 
-        Optional<Account> account = AccountRepository.findById(newMessage.getPostedBy());
+        Optional<Account> account = AccountRepository.FindById(newMessage.getPostedBy());
         if (!account.isPresent()) {
             throw new IllegalArgumentException("Invalid user");
         }
