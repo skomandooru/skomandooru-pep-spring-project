@@ -1,74 +1,80 @@
 package com.example.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.entity.Account;
 import com.example.entity.Message;
-import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MessageService {
 
-    @Autowired
+    @Autowired 
     private MessageRepository messageRepository;
 
-    public Message createMessage(Message newMessage) {
-        if (newMessage.getMessageText().isEmpty() || ((CharSequence) newMessage.getMessageText()).length() > 255) {
-            throw new IllegalArgumentException("Invalid message text");
-        }
+    public Message updateMessage (Message message) throws Exception {
+    
+    if(message.getMessage_text()==null || message.getMessage_text().equals("")){
+        throw new Exception("message text is empty");
+    } 
 
-        Optional<Account> account = AccountRepository.FindById(newMessage.getPostedBy());
-        if (!account.isPresent()) {
-            throw new IllegalArgumentException("Invalid user");
-        }
+    if(message.getMessage_text().length()>255) 
+        throw new Exception("too many characters");
+  
+    if(!messageRepository.existsById(message.getMessage_id()))
+        throw new Exception("message does not exist");
 
-        newMessage.setTime_posted_epoch(System.currentTimeMillis());
-        return messageRepository.save(newMessage);
-    }
+    return messageRepository.save(message);
+    } 
 
-    public List<Message> getAllMessages() {
+    public List <Message> getAllMessages () {
         return messageRepository.findAll();
     }
 
-    public Message getMessageById(Long messageId) throws Exception {
-        Optional<Message> message = messageRepository.findById(messageId);
-        if (message.isPresent()) {
-            return message.get();
-        } else {
-            throw new Exception("Message not found");
-        }
+    /*if(Message.getMessageByMessageId()==null){
+    try {
+        throw new InvalidMessageException("message text does not exist");
+    } catch (InvalidMessageException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }  
+    }     
+}*/
+    public Message retrieveMessagebyid (Integer messageId) throws Exception{
+        if(!messageRepository.existsById(messageId))
+        throw new Exception("message does not exist");    
+
+        return messageRepository.findById(messageId).get();
     }
 
-    public void deleteMessage(Long messageId) {
-        Optional<Message> message = messageRepository.findById(messageId);
-        if (message.isPresent()) {
-            messageRepository.delete(message.get());
-        } // No need to throw an exception if the message does not exist
-    }
+    public Message createmessage(Message message) throws Exception {
+        if(message.getMessage_text()==null || message.getMessage_text().equals("")){
+            throw new Exception("message text is empty");
+        
+        } 
+    
+        if(message.getMessage_text().length()>255) 
+            throw new Exception("too many characters");
+      
+        /*if(!messageRepository.existsById(message.getMessage_id()))
+            throw new InvalidMessageException("message does not exist");*/
 
-    public int updateMessageText(Long messageId, String newMessageText) throws Exception {
-        if (newMessageText.isEmpty() || newMessageText.length() > 255) {
-            throw new IllegalArgumentException("Invalid message text");
-        }
+        return messageRepository.save(message);
+}
 
-        Optional<Message> message = messageRepository.findById(messageId);
-        if (message.isPresent()) {
-            message.get().setMessage_text(newMessageText);
-            messageRepository.save(message.get());
-            return 1; // Rows updated
-        } else {
-            throw new Exception("Message not found");
-        }
+    public int getMessage_id(Long messageId, String string) {
+        return 0;
     }
 
     public List<Message> getMessagesByUser(Long accountId) {
-        return messageRepository.findByPostedBy(accountId);
+        return null;
     }
-    
-    // Add other message-related methods here
-}
+
+    public void deleteMessage(Long messageId) {
+    }
+
+    public Message retrieveMessagebyid(Long messageId) {
+        return null;
+    }   }

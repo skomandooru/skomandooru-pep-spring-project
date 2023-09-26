@@ -1,3 +1,5 @@
+package com.example.controller;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +15,6 @@ import com.example.service.MessageService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 //@RequestMapping("/api")
@@ -35,7 +36,7 @@ public class SocialMediaController {
     @ResponseBody
     public ResponseEntity<Account> registerAccount(@RequestBody Account newAccount) {
        
-       if(accountService.checkUsernameAvailability(newAccount.getUsername() && accountService.loginAccount(newAccount.getUsername()), newAccount.getPassword())) {
+       if(accountService.checkUsernameAvailability(newAccount.getUsername() && accountService.login(newAccount.getUsername(), null), newAccount.getPassword())) {
             accountService.addAccount(newAccount);
             return new ResponseEntity<Account>(accountService.loginAccount(newAccount), HttpStatus.OK);
        }
@@ -59,13 +60,13 @@ public class SocialMediaController {
 
     // Endpoint 3: Create a new message
     @PostMapping("/messages")
-    @ResponseBody
-    public ResponseEntity<Message> createMessage(@RequestBody Message newMessage) {
+    public ResponseEntity<?> postMessageHandler(@RequestBody Message message){
         try {
-            Message createdMessage = messageService.createMessage(newMessage);
-            return ResponseEntity.ok(createdMessage);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            Message createmessage = messageService.createmessage(message);            
+            return ResponseEntity.ok(createmessage);
+        } 
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
     }
 
@@ -81,7 +82,7 @@ public class SocialMediaController {
     @ResponseBody
     public ResponseEntity<Message> getMessageById(@PathVariable("message_id") Long messageId) {
         try {
-            Message message = messageService.getMessageById(messageId);
+            Message message = messageService.retrieveMessagebyid(messageId);
             return ResponseEntity.ok(message);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -106,7 +107,7 @@ public class SocialMediaController {
             @PathVariable("message_id") Long messageId,
             @RequestBody Map<String, String> updateRequest) {
         try {
-            int rowsUpdated = messageService.updateMessageText(messageId, updateRequest.get("message_text"));
+            int rowsUpdated = messageService.getMessage_id(messageId, updateRequest.get("message_text"));
             return ResponseEntity.ok(rowsUpdated);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);

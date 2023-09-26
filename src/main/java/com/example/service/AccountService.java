@@ -41,6 +41,8 @@ public class AccountService {
         }
     }
 
+
+
     public void addAccount(Account newAccount) {
     }
 
@@ -61,6 +63,12 @@ public class AccountService {
         if (username != "" && password.length() >= 4) {
             return true;
         }
+        return false;
+    }
+
+
+
+    public boolean loginAccount(String username) {
         return false;
     }
 }
