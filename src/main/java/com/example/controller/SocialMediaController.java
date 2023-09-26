@@ -97,7 +97,6 @@ public class SocialMediaController {
             throw new ResponseStatusException(HttpStatus.OK); // Deleting a non-existent message is considered successful
         }
     }
-
     // Endpoint 7: Update a message text by its ID
     @PatchMapping("/messages/{message_id}")
     @ResponseBody
