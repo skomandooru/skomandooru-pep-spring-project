@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.service.AccountService;
+import com.example.service.MessageService;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
@@ -37,12 +38,12 @@ public class SocialMediaController {
      * @return
      */
     @Autowired
-    //private MessageService messageService;
+    private MessageService messageService;
 
     @PostMapping("/register")
-    public AccountService registerUser(@RequestBody Account account) {
+    public AccountService registerUser(Account account) {
         if(account.getUsername().contains(account.getUsername())) {
-            return ((Object) AccountService.status(409)).body(accountService.addAccount(account)); 
+            return AccountService.status(409).body(accountService.addAccount(account)); 
         }
         else if (account.getUsername().isBlank() || (account.getPassword().length() <= 4)) {
             return AccountService.status(400). body(accountService.addAccount(account));
@@ -62,7 +63,7 @@ public class SocialMediaController {
     @PostMapping("/messages")
     @ResponseBody
     public Map<String, Object> createMessage(@RequestBody Message newMessage) {
-        return messageService.createMessage(newMessage);
+        return Message.createMessage(newMessage);
     }
 
     @GetMapping("/messages")
