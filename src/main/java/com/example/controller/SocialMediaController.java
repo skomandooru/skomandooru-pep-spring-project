@@ -11,6 +11,7 @@ import com.example.entity.Message;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class SocialMediaController {
     // Endpoint 4: Retrieve all messages
     @GetMapping("/messages")
     @ResponseBody
-    public List<Message> getAllMessages() {
+    public ArrayList<Message> getAllMessages() {
         return messageService.getAllMessages();
     }
 

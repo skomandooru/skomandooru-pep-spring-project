@@ -14,7 +14,7 @@ public class MessageService {
     @Autowired 
     private MessageRepository messageRepository;
 
-    public Message getAllMessages(Message message) {
+    public List<Message> getAllMessages(Message message) {
         return messageRepository.findAll();
     }
     
