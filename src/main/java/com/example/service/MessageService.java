@@ -67,5 +67,9 @@ public class MessageService {
 
     public Message getMessageById(int messageId) {
         return messageRepository.getMessageById(messageId);
-    }   
+    }
+    
+    public Message retrieveMessageById(Message messageId) {
+        return messageRepository.retrieveMessageById(messageId);
+    } 
 }

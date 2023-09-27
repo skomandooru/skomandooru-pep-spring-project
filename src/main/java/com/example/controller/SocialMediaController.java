@@ -78,9 +78,9 @@ public class SocialMediaController {
     // Endpoint 5: Retrieve a message by its ID
     @GetMapping("/messages/{message_id}")
     @ResponseBody
-    public ResponseEntity<Message> getMessageById(@PathVariable("message_id") Long messageId) {
+    public ResponseEntity<Message> getMessageById(@PathVariable("message_id") Message messageId) {
         try {
-            Message message = messageService.retrieveMessagebyid(messageId);
+            Message message = messageService.retrieveMessageById(messageId);
             return ResponseEntity.ok(message);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
