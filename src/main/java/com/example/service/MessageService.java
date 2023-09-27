@@ -14,7 +14,7 @@ public class MessageService {
     @Autowired 
     private MessageRepository messageRepository;
 
-    public Message updateMessage (Message message) throws Exception {
+  /*  public Message updateMessage (Message message) throws Exception {
     
     if(message.getMessage_text()==null || message.getMessage_text().equals("")){
         throw new Exception("message text is empty");
@@ -28,18 +28,18 @@ public class MessageService {
 
     return messageRepository.save(message);
     } 
-
+*/
     public List <Message> getAllMessages () {
         return messageRepository.findAll();
     }
     
-    public Message retrieveMessagebyid (Integer messageId) throws Exception{
+ /*    public Message retrieveMessagebyid (Integer messageId) throws Exception{
         if(!messageRepository.existsById(messageId))
         throw new Exception("message does not exist");    
     
         return messageRepository.findById(messageId).get();
     }
-
+*/
     public Message createmessage(Message message) throws Exception {
         if(message.getMessage_text()==null || message.getMessage_text().equals("")){
             throw new Exception("message text is empty");
@@ -76,10 +76,18 @@ public class MessageService {
         return messageRepository.existsById(messageId);
     }
 
-    public Message retrieveMessagebyid(Long messageId) {
-        return null;
+    public boolean checkMessageAvailability(String message) {
+        if (message != "" && message.length() <= 255) {
+            return true;
+        }
+        return false;
+    } 
+
+    public Integer updateMessageById(int messageId, String request) {
+        return messageRepository.updateMessage(messageId, request);
     }
 
     public Message getMessageById(int messageId) {
-        return null;
-    }   }
+        return messageRepository.getMessageById(messageId);
+    }   
+}

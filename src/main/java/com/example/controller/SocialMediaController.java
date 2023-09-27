@@ -39,21 +39,21 @@ public class SocialMediaController {
             return new ResponseEntity<Account>(accountService.loginAccount(newAccount), HttpStatus.OK);
        }
        else if(!accountService.checkUsernameAvailability(newAccount.getUsername())) {
-        return new ResponseEntity<Account>(HttpStatus.CONFLICT);
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
        }       
-       return new ResponseEntity<Account>(HttpStatus.BAD_REQUEST);
+       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }   
 
     // Endpoint 2: User Login
     @PostMapping("/login")
-    @ResponseBody
-    public ResponseEntity<Account> login(@RequestBody Map<String, String> loginRequest) {
-        try {
-            Account account = accountService.login(loginRequest.get("username"), loginRequest.get("password"));
-            return ResponseEntity.ok(account);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage(), e);
-        }
+    //@ResponseBody
+    public ResponseEntity<Account> login(@RequestBody Account newAccount) {
+            if (accountService.loginAccount(newAccount)!= null) {
+                return new ResponseEntity<Account>(accountService.loginAccount(newAccount), HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
     }
 
     // Endpoint 3: Create a new message
@@ -96,15 +96,23 @@ public class SocialMediaController {
     
     // Endpoint 7: Update a message text by its ID
     @PatchMapping("/messages/{message_id}")
-    public ResponseEntity<?> updateMessage(@PathVariable("message_id") int messageId, @RequestBody Message request) throws Exception {
-        Message existingMessage = messageService.getMessageById(messageId);
+    public ResponseEntity<Integer> updateMessage(@PathVariable("message_id") int messageId, @RequestBody Message request) throws Exception {
+      /*   Message existingMessage = messageService.getMessageById(messageId);
         String newMessageText = request.getMessage_text();
         if (newMessageText == null || newMessageText.trim().isEmpty() || newMessageText.length() > 255 || existingMessage == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         existingMessage.setMessage_text(newMessageText);
         messageService.createmessage(existingMessage);
-        return new ResponseEntity<>(1, HttpStatus.OK);
+        return new ResponseEntity<>(1, HttpStatus.OK); 
+        */
+        if (messageService.getMessageById(messageId)!= null && messageService.checkMessageAvailability(request.getMessage_text())) {
+            //messageService.updateMessage(messageId, request.getMessageText());
+            return new ResponseEntity<Integer>(messageService.updateMessageById(messageId, request.getMessage_text()), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } 
     }
   
     // Endpoint 8: Retrieve all messages by a particular user

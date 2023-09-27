@@ -42,10 +42,11 @@ public class AccountService {
     }
 
     public void addAccount(Account newAccount) {
+        accountRepo.save(newAccount);
     }
 
     public Account loginAccount(Account newAccount) {
-        return null;
+        return accountRepo.findByUsernameAndPassword(newAccount.getUsername(), newAccount.getPassword());
     }
     
     // Add other account-related methods here
@@ -61,10 +62,6 @@ public class AccountService {
         if (username != "" && password.length() >= 4) {
             return true;
         }
-        return false;
-    }
-
-    public boolean loginAccount(String username) {
         return false;
     }
 }
