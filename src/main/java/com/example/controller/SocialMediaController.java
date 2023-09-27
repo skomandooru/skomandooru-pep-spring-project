@@ -71,8 +71,8 @@ public class SocialMediaController {
     // Endpoint 4: Retrieve all messages
     @GetMapping("/messages")
     @ResponseBody
-    public Message getAllMessages() {
-        return messageService.getAllMessages(null);
+    public List<Message> getAllMessages() {
+        return messageService.getAllMessages();
     }
 
     // Endpoint 5: Retrieve a message by its ID

@@ -20,7 +20,4 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
 
     @Query("FROM Message WHERE message_id = :message_id")
 	Message retrieveMessageById(@Param("message_id") Message messageId);
-
-    @Query("SELECT * FROM Message WHERE message = :message")
-    Message getAllMessages(@Param("message") String message);
 }
