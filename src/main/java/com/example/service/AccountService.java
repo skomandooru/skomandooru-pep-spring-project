@@ -41,8 +41,6 @@ public class AccountService {
         }
     }
 
-
-
     public void addAccount(Account newAccount) {
     }
 
@@ -65,8 +63,6 @@ public class AccountService {
         }
         return false;
     }
-
-
 
     public boolean loginAccount(String username) {
         return false;

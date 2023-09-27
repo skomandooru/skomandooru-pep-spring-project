@@ -89,28 +89,24 @@ public class SocialMediaController {
 
     // Endpoint 6: Delete a message by its ID
     @DeleteMapping("/messages/{message_id}")
-    public ResponseEntity<Void> deleteMessage(@PathVariable("message_id") Long messageId) {
-        try {
-            messageService.deleteMessage(messageId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.OK); // Deleting a non-existent message is considered successful
-        }
-    }
+    public ResponseEntity<Integer> deleteMessageById(@PathVariable("message_id") int messageId) {
+        int rowsEffected = messageService.deleteMessageById(messageId);
+        return new ResponseEntity<>(rowsEffected, HttpStatus.OK);
+    } 
+    
     // Endpoint 7: Update a message text by its ID
     @PatchMapping("/messages/{message_id}")
-    @ResponseBody
-    public ResponseEntity<Integer> updateMessageText(
-            @PathVariable("message_id") Long messageId,
-            @RequestBody Map<String, String> updateRequest) {
-        try {
-            int rowsUpdated = messageService.getMessage_id(messageId, updateRequest.get("message_text"));
-            return ResponseEntity.ok(rowsUpdated);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+    public ResponseEntity<?> updateMessage(@PathVariable("message_id") int messageId, @RequestBody Message request) throws Exception {
+        Message existingMessage = messageService.getMessageById(messageId);
+        String newMessageText = request.getMessage_text();
+        if (newMessageText == null || newMessageText.trim().isEmpty() || newMessageText.length() > 255 || existingMessage == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        existingMessage.setMessage_text(newMessageText);
+        messageService.createmessage(existingMessage);
+        return new ResponseEntity<>(1, HttpStatus.OK);
     }
-
+  
     // Endpoint 8: Retrieve all messages by a particular user
     @GetMapping("/accounts/{account_id}/messages")
     @ResponseBody

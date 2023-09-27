@@ -32,20 +32,11 @@ public class MessageService {
     public List <Message> getAllMessages () {
         return messageRepository.findAll();
     }
-
-    /*if(Message.getMessageByMessageId()==null){
-    try {
-        throw new InvalidMessageException("message text does not exist");
-    } catch (InvalidMessageException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-    }  
-    }     
-}*/
+    
     public Message retrieveMessagebyid (Integer messageId) throws Exception{
         if(!messageRepository.existsById(messageId))
         throw new Exception("message does not exist");    
-
+    
         return messageRepository.findById(messageId).get();
     }
 
@@ -58,8 +49,8 @@ public class MessageService {
         if(message.getMessage_text().length()>255) 
             throw new Exception("too many characters");
       
-        /*if(!messageRepository.existsById(message.getMessage_id()))
-            throw new InvalidMessageException("message does not exist");*/
+        if(!messageRepository.existsById(message.getMessage_id()))
+            throw new Exception("message does not exist");
 
         return messageRepository.save(message);
 }
@@ -72,9 +63,23 @@ public class MessageService {
         return null;
     }
 
-    public void deleteMessage(Long messageId) {
+    public int deleteMessageById(int message_id) {
+        if (doesMessageExist(message_id)) {
+            messageRepository.deleteById(message_id);
+            return 1; 
+        } else {
+            return 0; 
+        }
+    }
+
+    public boolean doesMessageExist(int messageId) {
+        return messageRepository.existsById(messageId);
     }
 
     public Message retrieveMessagebyid(Long messageId) {
+        return null;
+    }
+
+    public Message getMessageById(int messageId) {
         return null;
     }   }
