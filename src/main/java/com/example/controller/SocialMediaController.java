@@ -47,7 +47,7 @@ public class SocialMediaController {
     // Endpoint 2: User Login
     @PostMapping("/login")
     //@ResponseBody
-    public ResponseEntity<Account> login(@RequestBody Account newAccount) {
+    public ResponseEntity<?> login(@RequestBody Account newAccount) {
             if (accountService.loginAccount(newAccount)!= null) {
                 return new ResponseEntity<Account>(accountService.loginAccount(newAccount), HttpStatus.OK);
             }
@@ -71,8 +71,8 @@ public class SocialMediaController {
     // Endpoint 4: Retrieve all messages
     @GetMapping("/messages")
     @ResponseBody
-    public List<Message> getAllMessages() {
-        return messageService.getAllMessages();
+    public Message getAllMessages() {
+        return messageService.getAllMessages(null);
     }
 
     // Endpoint 5: Retrieve a message by its ID
@@ -81,7 +81,7 @@ public class SocialMediaController {
     public ResponseEntity<Message> getMessageById(@PathVariable("message_id") int messageId) {
         
         Message message = messageService.retrieveById(messageId);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return new ResponseEntity<Message>(message, HttpStatus.OK);
         
         // if (messageService.retrieveById(messageId)!= null) {
         //     return new ResponseEntity<>(HttpStatus.OK);
