@@ -22,7 +22,7 @@ public class SocialMediaController {
 
     //private final AtomicLong accountIdCounter = new AtomicLong(1);
     //private final AtomicLong messageIdCounter = new AtomicLong(1);
-    //private final List<Account> accounts = new ArrayList<>();
+    //private final List<Account> accounts = new ArrayList<>(); 
     //private final List<Message> messages = new ArrayList<>();
 
     @Autowired
