@@ -73,8 +73,9 @@ public class SocialMediaController {
     // Endpoint 4: Retrieve all messages
     @GetMapping("/messages")
     @ResponseBody
-    public List<Message> getAllMessages() {
-        return messageService.getAllMessages();
+    public ResponseEntity<List<Message>>getAllMessages() {
+        return new ResponseEntity<List<Message>>(messageService.getAllMessages(), HttpStatus.OK);
+        //return messageService.getAllMessages();
     }
 
     // Endpoint 5: Retrieve a message by its ID
@@ -124,7 +125,7 @@ public class SocialMediaController {
     // Endpoint 8: Retrieve all messages by a particular user
     @GetMapping("/accounts/{account_id}/messages")
     @ResponseBody
-    public List<Message> getMessagesByUser(@PathVariable("account_id") Long accountId) {
+    public List<Message> getMessagesByUser(@PathVariable("account_id") int accountId) {
         return messageService.getMessagesByUser(accountId);
     }
 }

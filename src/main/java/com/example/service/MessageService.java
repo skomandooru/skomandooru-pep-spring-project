@@ -24,21 +24,21 @@ public class MessageService {
         
         } 
     
-        if(message.getMessage_text().length()>255) 
+        if(message.getMessage_text().length()>255) {
             throw new Exception("too many characters");
-      
-        if(!messageRepository.existsById(message.getMessage_id()))
-            throw new Exception("message does not exist");
-
+        }    
+        // if(!messageRepository.existsById(message.getMessage_id())) {
+        //     throw new Exception("message does not exist");
+        // }
         return messageRepository.save(message);
-}
+    }
 
     public int getMessage_id(Long messageId, String string) {
         return 0;
     }
 
-    public List<Message> getMessagesByUser(Long accountId) {
-        return null;
+    public List<Message> getMessagesByUser(int accountId) {
+        return messageRepository.getMessagesByUser(accountId);
     }
 
     public int deleteMessageById(int message_id) {

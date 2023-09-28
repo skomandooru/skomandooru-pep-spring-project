@@ -1,5 +1,7 @@
 package com.example.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +22,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
 
     @Query("FROM Message WHERE message_id = :message_id")
 	Message retrieveMessageById(@Param("message_id") Message messageId);
+
+    @Query("FROM Message WHERE posted_by = :posted_by")
+    List<Message> getMessagesByUser(@Param("posted_by") int posted_by);
 }
