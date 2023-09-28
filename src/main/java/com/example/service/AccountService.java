@@ -9,6 +9,7 @@ import com.example.repository.AccountRepository;
 import java.util.Optional;
 
 import javax.naming.AuthenticationException;
+import javax.swing.text.html.Option;
 
 @Service
 public class AccountService {
@@ -27,21 +28,21 @@ public class AccountService {
         }
 
         Account existingAccount = accountRepo.findByUsername(newAccount.getUsername());
-        if (existingAccount.isPresent()) {
+        if (existingAccount!= null) {
             throw new Exception("Username already exists");
         }
 
         return accountRepo.save(newAccount);
     }
 
-    public Account login(String username, String password) throws AuthenticationException {
-        Account account = accountRepo.findByUsernameAndPassword(username, password);
-        if (account.isPresent()) {
-            return account.get();
-        } else {
-            throw new AuthenticationException("Invalid credentials");
-        }
-    }
+    // public Account login(String username, String password) throws AuthenticationException {
+    //     Optional<Account> account = accountRepo.findByUsernameAndPassword(username, password);
+    //     if (account.isPresent()) {
+    //         return account.get();
+    //     } else {
+    //         throw new AuthenticationException("Invalid credentials");
+    //     }
+    // }
 
     public void addAccount(Account newAccount) {
         accountRepo.save(newAccount);

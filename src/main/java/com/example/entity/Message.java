@@ -174,15 +174,4 @@ public class Message {
                 ", time_posted_epoch=" + time_posted_epoch +
                 '}';
     }
-    public Map<String, Object> getMessageText() {
-        return null;
-    }
-    public Object getPostedBy() {
-        return null;
-    }
-    public static Map<String, Object> createMessage(Message newMessage) {
-        return null;
-    }
-
-
 }
